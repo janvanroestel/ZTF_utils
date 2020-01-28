@@ -1,0 +1,15 @@
+Source: http://www.star.bristol.ac.uk/~mbt/papers/adassXXVI-P1-31-poster.pdf
+
+To download the Gaia density maps, use the following at one of the Gaia datacenters:
+e.g  http://gaia.ari.uni-heidelberg.de/tap.html
+
+
+"""
+SELECT gaia_healpix_index(8, source_id) AS hpx8,
+COUNT(*) * (POWER(4,8)*12.0/(41253.*3600)) AS srcdens
+FROM gaiadr2.gaia_source
+GROUP BY hpx8
+"""
+
+Store the outputfile as "Gaia_hp8_densitymap.fits"
+
