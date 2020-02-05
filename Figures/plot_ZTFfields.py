@@ -27,19 +27,21 @@ from astropy.coordinates import SkyCoord
 # plot arguments
 parser = argparse.ArgumentParser(description='Plot ZTF and TESS coverage')
 parser.add_argument('--fieldlists', nargs='+', default=[],
-                    help='list of filenames with fieldIDs')
+                    help='list of filenames with fieldIDs (only primary grid is supported)')
 parser.add_argument('--TESSsector','-t', type=int, default=None,
                     help='sectors to show')
 parser.add_argument('-c', type=str, default='C',
-                    help='coordinate system to plot')
-parser.add_argument('-i', type=bool, default=False,
+                    help='coordinate system to plot. options: "c=C", "c=G", "c=E" ')
+parser.add_argument('-i', action='store_true',
                     help='show interactive plot')
 parser.add_argument('-p', nargs='+', default=[],
                     help='list of dates for which to plot opposition lines')
-parser.add_argument('-f', type=bool, default=False,
+parser.add_argument('-f', action='store_true',
                     help='print FIDs on figure')
+parser.add_argument('--figsize', nargs=2,type=float,
+                    help='figure size; [x,y] in inch')
 parser.add_argument('-m', type=str, default=None,
-                    help='show moon')
+                    help='show moon on a particular date; example "-m=2020-01-01"')
 parser.add_argument('-b', type=str, default='Gaia',
                     help='background hist')
 args = parser.parse_args()
@@ -54,7 +56,7 @@ ZTFgrid = np.genfromtxt(datadir+'ZTF_Fields.txt',dtype=float,comments='#',names=
 ZTFfields = dict(zip(ZTFgrid['ID'], ZTFgrid))
 
 # init figure
-fig1 = plt.figure(figsize=(14,8))
+fig1 = plt.figure(figsize=np.array(args.figsize))
 
 if args.b=='Gaia':
     # background setup
@@ -209,5 +211,8 @@ for fields,c in zip([allfields,],colours2):
         except Exception as e:
             print(e)
 
-plt.show()
+plt.savefig('ZTFfields.pdf')
+plt.savefig('ZTFfields.png')
+if args.i:
+    plt.show()
 
